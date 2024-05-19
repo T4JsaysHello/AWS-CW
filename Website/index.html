@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Client</title>
+</head>
+<body>
+<h1>Data</h1>
+
+<h1>Weather data tempreature</h1>
+<p style="border-style: solid; width: 500px; border-width: 1px;" id="DataText"></p>
+
+<script>
+    //Open connection
+    let connection = new WebSocket("wss://82xw7qw7l6.execute-api.us-east-1.amazonaws.com/prod");
+
+    //Log connected response
+    connection.onopen = function(event){
+        console.log("Connected: " + JSON.stringify(event));
+        getData();
+    };
+
+    //Output messages from the server
+    connection.onmessage = function(msg){
+        document.getElementById("DataText").innerHTML += ( msg.data);
+        let allData = JSON.parse(msg.data);
+        
+        
+        
+        console.log("Message received.");
+    }
+
+    //Log errors
+    connection.onerror = function (error) {
+        console.log("WebSocket Error: " + JSON.stringify(error));
+    }
+
+    //Send message to server
+    function getData(){
+
+        //Create message to be sent to server
+        let msgObject = {
+            action: "sendMessage",//Used for routing in API Gateway
+        };
+
+        //Send message
+        connection.send(JSON.stringify(msgObject));
+
+        //Log result
+        console.log("Message sent: " + JSON.stringify(msgObject));
+    }
+
+
+</script>
+</body>
+</html>
